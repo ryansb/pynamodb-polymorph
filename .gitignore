@@ -1,0 +1,6 @@
+.pytest_cache
+dist/
+build/
+.coverage
+.vscode/
+Pipfile.lock

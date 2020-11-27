@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+src/pynamodb_polymorph/__init__.py
+src/pynamodb_polymorph/custom_attr.py
+src/pynamodb_polymorph.egg-info/PKG-INFO
+src/pynamodb_polymorph.egg-info/SOURCES.txt
+src/pynamodb_polymorph.egg-info/dependency_links.txt
+src/pynamodb_polymorph.egg-info/requires.txt
+src/pynamodb_polymorph.egg-info/top_level.txt
+src/pynamodb_polymorph.egg-info/zip-safe

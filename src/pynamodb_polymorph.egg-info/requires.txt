@@ -1,0 +1,7 @@
+pynamodb==5.0.0b3
+ulid-py
+
+[testing]
+faker
+pytest
+pytest-cov
