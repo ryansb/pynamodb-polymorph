@@ -8,3 +8,4 @@ from pynamodb_polymorph.custom_attr import (
     SetSizeAttribute,
     ULIDAttribute,
 )
+from pynamodb_polymorph.zlib_attr import CompressedAttribute
