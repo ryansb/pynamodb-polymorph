@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 ptpython = "*"
+twine = "*"
 
 [packages]
 "pynamodb-polymorph" = {editable = true, path = ".", extras=["testing"]}
