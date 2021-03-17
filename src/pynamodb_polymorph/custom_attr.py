@@ -68,7 +68,6 @@ class UpdatedIsoDateTime(IsoDateTime):
         super().__init__(
             *args,
             default=lambda: datetime.now(tz=timezone.utc),
-            default_for_new=lambda: datetime.now(tz=timezone.utc),
             **kwargs,
         )
 

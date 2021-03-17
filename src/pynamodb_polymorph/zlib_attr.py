@@ -1,6 +1,7 @@
 import zlib
 
 from pynamodb.attributes import Attribute
+from pynamodb.constants import BINARY
 
 
 class CompressedAttribute(Attribute[bytes]):
