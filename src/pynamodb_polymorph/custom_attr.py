@@ -1,6 +1,6 @@
+import typing as t
 from datetime import datetime, timezone
 from string import Template
-from typing import List, Union
 
 import ulid
 from pynamodb.attributes import NumberAttribute, UnicodeAttribute
@@ -16,8 +16,8 @@ class CompoundTemplateAttribute(UnicodeAttribute):
     def __init__(
         self,
         *args,
-        template: Union[Template, str],
-        attrs: List[str],
+        template: t.Union[Template, str],
+        attrs: t.List[str],
         **kwargs,
     ):
         self.attrs = attrs
@@ -27,9 +27,42 @@ class CompoundTemplateAttribute(UnicodeAttribute):
         super().__init__(*args, **kwargs)
 
     def __get__(self, obj, type_):
+        if not obj:
+            return self
         return self.template.substitute(
             {x: getattr(obj, x) for x in self.attrs},
         )
+
+
+class JoinedUnicodeAttribute(UnicodeAttribute):
+    """Compound STRING attribute built by joining attributes `attrs` with a chosen separator `sep`.
+
+    `JoinedAttribute(attrs=['org_id', 'user_id'], sep='|') # makes the key `123|456` for org_id=123,user_id=456`
+
+    attrs: A list of attribute names to be used in the key. Either `List[str]` or a comma-separated list of attributes
+    sep: A non-empty string to join together
+    """
+
+    def __init__(
+        self,
+        *args,
+        attrs: t.Union[str, t.List[str]],
+        sep: str = "#",
+        **kwargs,
+    ):
+
+        self.attrs = (
+            tuple(attrs)
+            if isinstance(attrs, (list, tuple, set))
+            else tuple(i.strip() for i in attrs.split(","))
+        )
+        self.sep = sep
+        super().__init__(*args, **kwargs)
+
+    def __get__(self, obj, type_):
+        if not obj:
+            return self
+        return self.sep.join(str(getattr(obj, x)) for x in self.attrs)
 
 
 class ULIDAttribute(UnicodeAttribute):
@@ -67,7 +100,8 @@ class UpdatedIsoDateTime(IsoDateTime):
     def __init__(self, *args, **kwargs):
         super().__init__(
             *args,
-            default=lambda: datetime.now(tz=timezone.utc),
+            # Typing override because our parent class already has a serde for datetime -> str
+            default=t.cast(t.Callable[[], str], lambda: datetime.now(tz=timezone.utc)),
             **kwargs,
         )
 

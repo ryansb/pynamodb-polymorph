@@ -15,10 +15,16 @@ class Publisher(Base, discriminator="Publisher"):
     name = UnicodeAttribute()
     description = UnicodeAttribute(default="")
     gsi1_pk = CopiedDiscriminatorAttribute(source="cls")
-    gsi1_sk = CompoundTemplateAttribute(
-        template="PUBLISHER#$name",
-        attrs=["name"],
-    )
+
+    _slug = "PUBLISHER"
+    gsi1_sk = JoinedUnicodeAttribute(attrs=["_slug", 'name'], sep='#')
+
+    # Alternative way to specify gsi1_sk using a `string.Template`.
+    # This is best for cases that aren't simply joining attrs with a character
+    # gsi1_sk = CompoundTemplateAttribute(
+    #     template="PUBLISHER#$name",
+    #     attrs=["name"],
+    # )
 ```
 
 The template above will take any value in `name` and fill it in to the

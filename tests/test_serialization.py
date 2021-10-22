@@ -1,28 +1,12 @@
-import json
-import random
-import time
 import timeit
 from datetime import datetime, timedelta, timezone
-from decimal import Decimal
 from textwrap import dedent
 
-import models
 import pytest
 import ulid
 from faker import Faker
 
-
-def defaultencode(o):
-    if isinstance(o, Decimal):
-        # Subclass float with custom repr?
-        if float(o) == int(o):
-            return int(o)
-        return float(o)
-    if isinstance(o, set):
-        return list(o)
-    if isinstance(o, ulid.ULID):
-        return o.str
-    raise TypeError(repr(o) + " is not JSON serializable")
+import models
 
 
 def test_compound_key_from_discriminator():
@@ -31,6 +15,7 @@ def test_compound_key_from_discriminator():
     assert as_record["gsi1_pk"]
     assert as_record["gsi1_pk"]["S"]
     assert as_record["gsi1_pk"]["S"] == "Publisher"
+    assert as_record["gsi1_sk"]["S"] == "PUBLISHER#RyanSB"
 
 
 def test_item_calculated():
@@ -56,6 +41,20 @@ def test_foo():
     assert ulid.from_str(f.serialize()["ulid"]["S"])
     assert ulid.from_str(f.serialize()["pk"]["S"].split("#")[-1])
     assert f.serialize()["__type"]["S"] == "Foo"
+
+
+def test_joined_attr():
+    f = models.Review(
+        app="Annoyed Birds",
+        stars=5,
+        reviewer_email="someone@test.com",
+        reviewer_name="Some One",
+    )
+    print(f.serialize())
+    assert ulid.from_str(f.serialize()["ulid"]["S"])
+    assert ulid.from_str(f.serialize()["pk"]["S"].split("#")[-1])
+    assert f.serialize()["__type"]["S"] == "Review"
+    assert f.serialize()["gsi1_pk"]["S"] == "REVIEW#someone@test.com"
 
 
 def test_created_at():

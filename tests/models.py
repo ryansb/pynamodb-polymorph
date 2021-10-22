@@ -1,5 +1,5 @@
+import typing as t
 from datetime import datetime
-from typing import Optional
 
 from pynamodb.attributes import (
     DiscriminatorAttribute,
@@ -10,13 +10,13 @@ from pynamodb.attributes import (
 )
 from pynamodb.indexes import AllProjection, GlobalSecondaryIndex
 from pynamodb.models import Model
-
 from pynamodb_polymorph import (
     CompoundTemplateAttribute,
     CopiedDiscriminatorAttribute,
     CopiedIntegerAttribute,
     CopiedULIDAttribute,
     CopiedUnicodeAttribute,
+    JoinedUnicodeAttribute,
     SetSizeAttribute,
     ULIDAttribute,
 )
@@ -64,12 +64,15 @@ class Base(Model):
         return self.__class__.__name__.upper()
 
     @property
-    def created_at(self) -> Optional[datetime]:
+    def created_at(self) -> datetime:
         """Based on a ULID `pk`, extract an aware datetime"""
         if ts := getattr(self.pk, "timestamp", None):
             return ts().datetime
         if ts := getattr(self.ulid, "timestamp", None):
             return ts().datetime
+        raise ValueError(
+            "Model doesn't have a ULID attribute to interpret creation time from"
+        )
 
 
 class FooModel(Base, discriminator="Foo"):
@@ -102,10 +105,7 @@ class Review(Base, discriminator="Review"):
     reviewer_email = UnicodeAttribute()
     reviewer_name = UnicodeAttribute()
     stars = NumberAttribute()
-    gsi1_pk = CompoundTemplateAttribute(
-        template="REVIEW#$reviewer_email",
-        attrs=["reviewer_email"],
-    )
+    gsi1_pk = JoinedUnicodeAttribute(attrs="type_,reviewer_email")
     gsi1_sk = CopiedUnicodeAttribute(source="app")
     gsi2_pk = CompoundTemplateAttribute(
         template="REVIEW#$app",
