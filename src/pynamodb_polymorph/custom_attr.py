@@ -60,7 +60,7 @@ class JoinedUnicodeAttribute(UnicodeAttribute):
         super().__init__(*args, **kwargs)
 
     def __get__(self, obj, type_):
-        if not obj:
+        if obj is None:
             return self
         return self.sep.join(str(getattr(obj, x)) for x in self.attrs)
 
@@ -136,6 +136,8 @@ def copied_attr_factory(attr_type):
             super().__init__(*args, **kwargs)
 
         def __get__(self, obj, type_):
+            if obj is None:
+                return self
             return getattr(obj, self.source)
 
     CopiedAttribute.__doc__ = f"""A copy of a {attr_type.__name__}.

@@ -1,3 +1,3 @@
 from setuptools import setup
 
-setup(version="0.3.1", package_dir={"": "src"})
+setup(version="0.3.2", package_dir={"": "src"})
