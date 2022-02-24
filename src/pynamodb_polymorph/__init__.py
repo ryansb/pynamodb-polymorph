@@ -6,9 +6,9 @@ from pynamodb_polymorph.custom_attr import (
     CopiedUnicodeAttribute,
     EscapedJoinedUnicodeAttribute,
     IsoDateTime,
-    UpdatedIsoDateTime,
     JoinedUnicodeAttribute,
     SetSizeAttribute,
     ULIDAttribute,
+    UpdatedIsoDateTime,
 )
 from pynamodb_polymorph.zlib_attr import CompressedAttribute
