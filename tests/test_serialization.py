@@ -1,4 +1,5 @@
 import timeit
+import urllib.parse
 from datetime import datetime, timedelta, timezone
 from textwrap import dedent
 
@@ -55,6 +56,22 @@ def test_joined_attr():
     assert ulid.from_str(f.serialize()["pk"]["S"].split("#")[-1])
     assert f.serialize()["__type"]["S"] == "Review"
     assert f.serialize()["gsi1_pk"]["S"] == "REVIEW#someone@test.com"
+
+
+def test_escaped_joined_attr():
+    invited_email = "helloworld@example.com"
+    inviter_email = "other@example.com"
+
+    f = models.UserInvite(inviter_email=inviter_email, invited_email=invited_email)
+    print(f.serialize())
+    assert (
+        f.compound_all_escaped
+        == f"USERINVITE#{urllib.parse.quote(invited_email)}#{urllib.parse.quote(inviter_email)}"
+    )
+    assert (
+        f.compound_single_escaped
+        == f"USERINVITE#{urllib.parse.quote(invited_email)}#{inviter_email}"
+    )
 
 
 def test_created_at():

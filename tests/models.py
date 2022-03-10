@@ -16,6 +16,7 @@ from pynamodb_polymorph import (
     CopiedIntegerAttribute,
     CopiedULIDAttribute,
     CopiedUnicodeAttribute,
+    EscapedJoinedUnicodeAttribute,
     JoinedUnicodeAttribute,
     SetSizeAttribute,
     ULIDAttribute,
@@ -112,6 +113,17 @@ class Review(Base, discriminator="Review"):
         attrs=["app"],
     )
     gsi2_sk = CopiedIntegerAttribute(source="ulid")
+
+
+class UserInvite(Base, discriminator="Invite"):
+    compound_all_escaped = EscapedJoinedUnicodeAttribute(
+        attrs="type_,invited_email,inviter_email"
+    )
+    compound_single_escaped = EscapedJoinedUnicodeAttribute(
+        attrs="type_,invited_email,inviter_email", escaped="invited_email"
+    )
+    invited_email = UnicodeAttribute()
+    inviter_email = UnicodeAttribute()
 
 
 class App(Base, discriminator="App"):
