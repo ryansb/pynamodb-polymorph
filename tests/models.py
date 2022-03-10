@@ -119,6 +119,9 @@ class UserInvite(Base, discriminator="Invite"):
     compound_all_escaped = EscapedJoinedUnicodeAttribute(
         attrs="type_,invited_email,inviter_email"
     )
+    compound_all_escaped_explicit = EscapedJoinedUnicodeAttribute(
+        attrs="type_,invited_email,inviter_email", escaped="invited_email,inviter_email"
+    )
     compound_single_escaped = EscapedJoinedUnicodeAttribute(
         attrs="type_,invited_email,inviter_email", escaped="invited_email"
     )

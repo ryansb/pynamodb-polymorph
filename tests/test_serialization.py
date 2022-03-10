@@ -69,6 +69,10 @@ def test_escaped_joined_attr():
         == f"USERINVITE#{urllib.parse.quote(invited_email)}#{urllib.parse.quote(inviter_email)}"
     )
     assert (
+        f.compound_all_escaped_explicit
+        == f"USERINVITE#{urllib.parse.quote(invited_email)}#{urllib.parse.quote(inviter_email)}"
+    )
+    assert (
         f.compound_single_escaped
         == f"USERINVITE#{urllib.parse.quote(invited_email)}#{inviter_email}"
     )
