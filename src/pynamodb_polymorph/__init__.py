@@ -4,6 +4,7 @@ from pynamodb_polymorph.custom_attr import (
     CopiedIntegerAttribute,
     CopiedULIDAttribute,
     CopiedUnicodeAttribute,
+    EscapedJoinedUnicodeAttribute,
     IsoDateTime,
     UpdatedIsoDateTime,
     JoinedUnicodeAttribute,
